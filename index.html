@@ -1,0 +1,226 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Netflix Clone</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #000; color: #fff; font-family: Arial, sans-serif; }
+
+    /* NAVBAR */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      position: sticky;
+      top: 0;
+      background: #000;
+    }
+    .logo { color: #e50914; font-size: 28px; font-weight: bold; }
+    .nav a { color: #fff; text-decoration: none; margin-left: 20px; font-size: 14px; }
+
+    /* HERO */
+    .hero {
+      height: 60vh;
+      background: url('https://image.tmdb.org/t/p/original/8QVDXDiOGHRcAD4oM6MXjE0osSj.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: flex-end;
+      padding: 40px;
+    }
+    .hero h1 { font-size: 40px; }
+    .hero p { margin: 10px 0; color: #ddd; max-width: 500px; }
+    .hero button {
+      padding: 10px 20px;
+      background: #e50914;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* SECTIONS */
+    .section { padding: 40px; }
+    .section h2 { margin-bottom: 15px; }
+    .movies {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+    }
+    .movies::-webkit-scrollbar { display: none; }
+
+    .card { min-width: 180px; }
+    .card img { width: 100%; border-radius: 6px; }
+    .card p { font-size: 13px; margin: 6px 0; }
+    .card button {
+      padding: 6px 10px;
+      background: #e50914;
+      border: none;
+      color: #fff;
+      font-size: 12px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: #111;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 700px;
+      display: flex;
+      gap: 20px;
+    }
+    .modal img { width: 220px; border-radius: 6px; }
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="nav">
+    <div class="logo">NETFLIX</div>
+    <div>
+      <a href="#home">Home</a>
+      <a href="#hindi">Hindi</a>
+      <a href="#marathi">Marathi</a>
+      <a href="#english">English</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" id="home">
+    <div>
+      <h1>Jawan (2023)</h1>
+      <p>Action thriller starring Shah Rukh Khan.</p>
+      <button onclick="openModal(jawan)">Watch</button>
+    </div>
+  </div>
+
+  <!-- HINDI -->
+  <div class="section" id="hindi">
+    <h2>Hindi Movies</h2>
+    <div class="movies">
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/8QVDXDiOGHRcAD4oM6MXjE0osSj.jpg" />
+        <p>Jawan (2023)</p>
+        <button onclick="openModal(jawan)">Watch</button>
+      </div>
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/arf00BkwvXo0CFKbaD9OpqdE4Nu.jpg" />
+        <p>Pathaan (2023)</p>
+        <button onclick="openModal(pathaan)">Watch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARATHI -->
+  <div class="section" id="marathi">
+    <h2>Marathi Movies</h2>
+    <div class="movies">
+      <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/en/4/4f/Sairat.jpg" />
+        <p>Sairat (2016)</p>
+        <button onclick="openModal(sairat)">Watch</button>
+      </div>
+      <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/en/4/47/Ved_Marathi_Film.jpg" />
+        <p>Ved (2022)</p>
+        <button onclick="openModal(ved)">Watch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENGLISH -->
+  <div class="section" id="english">
+    <h2>English Movies</h2>
+    <div class="movies">
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJIt8st5dglvd.jpg" />
+        <p>Oppenheimer (2023)</p>
+        <button onclick="openModal(oppenheimer)">Watch</button>
+      </div>
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/gh2bmprLtUQ8oXCSluzfqaicyrm.jpg" />
+        <p>John Wick 4 (2023)</p>
+        <button onclick="openModal(johnwick)">Watch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <span class="close" onclick="closeModal()">✖</span>
+    <div class="modal-content">
+      <img id="mImg" />
+      <div>
+        <h3 id="mTitle"></h3>
+        <p id="mDesc"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const jawan = {
+      title: 'Jawan (2023)',
+      desc: 'Action thriller starring Shah Rukh Khan.',
+      img: 'https://image.tmdb.org/t/p/w500/8QVDXDiOGHRcAD4oM6MXjE0osSj.jpg'
+    };
+    const pathaan = {
+      title: 'Pathaan (2023)',
+      desc: 'Spy action film.',
+      img: 'https://image.tmdb.org/t/p/w500/arf00BkwvXo0CFKbaD9OpqdE4Nu.jpg'
+    };
+    const sairat = {
+      title: 'Sairat (2016)',
+      desc: 'Marathi romantic drama.',
+      img: 'https://upload.wikimedia.org/wikipedia/en/4/4f/Sairat.jpg'
+    };
+    const ved = {
+      title: 'Ved (2022)',
+      desc: 'Marathi romantic drama.',
+      img: 'https://upload.wikimedia.org/wikipedia/en/4/47/Ved_Marathi_Film.jpg'
+    };
+    const oppenheimer = {
+      title: 'Oppenheimer (2023)',
+      desc: 'Biography of J. Robert Oppenheimer.',
+      img: 'https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJIt8st5dglvd.jpg'
+    };
+    const johnwick = {
+      title: 'John Wick 4 (2023)',
+      desc: 'Action revenge thriller.',
+      img: 'https://image.tmdb.org/t/p/w500/gh2bmprLtUQ8oXCSluzfqaicyrm.jpg'
+    };
+
+    function openModal(movie) {
+      document.getElementById('modal').style.display = 'flex';
+      document.getElementById('mImg').src = movie.img;
+      document.getElementById('mTitle').innerText = movie.title;
+      document.getElementById('mDesc').innerText = movie.desc;
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
+```
